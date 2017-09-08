@@ -1,9 +1,10 @@
 ﻿// ImmersiveHeadset Boundaries|SDK_ImmersiveHeadset|005
-
 namespace VRTK
 {
 #if VRTK_DEFINE_SDK_IMMERSIVEHEADSET
     using UnityEngine;
+    using UnityEngine.XR;
+    using UnityEngine.Experimental.XR;
 #endif
 
     /// <summary>
@@ -24,26 +25,25 @@ namespace VRTK
         /// </summary>
         public override void InitBoundaries()
         {
+            if (!XRDevice.SetTrackingSpaceType(TrackingSpaceType.RoomScale))
+            {
+                Debug.LogError("Could not set TrackingSpace to Roomscale. Please run the Room Setup again!");
+            }
         }
 
         /// <summary>
         /// The GetPlayArea method returns the Transform of the object that is used to represent the play area in the scene.
         /// </summary>
-        /// <returns>A transform of the object representing the play area in the scene.</returns>
+        /// <returns>The root transform of the scene, as the windows mixed reality API changes the origin point to correspond to the tracked space.</returns>
         public override Transform GetPlayArea()
         {
-            //cachedPlayArea = GetSDKManagerPlayArea();
-            //if (cachedPlayArea == null)
-            //{
-            //    var ovrManager = VRTK_SharedMethods.FindEvenInactiveComponent<OVRManager>();
-            //    if (ovrManager)
-            //    {
-            //        cachedPlayArea = ovrManager.transform;
-            //    }
-            //}
-
-            //return cachedPlayArea;
-            return null;
+            cachedPlayArea = GetSDKManagerPlayArea();
+            if (cachedPlayArea == null)
+            {
+                // we return the root transform, because the microsoft / unity integration means that when the play area is set up the world transform becomes the play area.
+                cachedPlayArea = Camera.main.transform.root;
+            }
+            return cachedPlayArea;
         }
 
         /// <summary>
@@ -52,27 +52,13 @@ namespace VRTK
         /// <returns>A Vector3 array of the points in the scene that represent the play area boundaries.</returns>
         public override Vector3[] GetPlayAreaVertices()
         {
-            //var area = new OVRBoundary();
-            //if (area.GetConfigured())
-            //{
-            //    var outerBoundary = area.GetDimensions(OVRBoundary.BoundaryType.OuterBoundary);
-            //    var thickness = 0.1f;
-
-            //    var vertices = new Vector3[8];
-
-            //    vertices[0] = new Vector3(outerBoundary.x - thickness, 0f, outerBoundary.z - thickness);
-            //    vertices[1] = new Vector3(0f + thickness, 0f, outerBoundary.z - thickness);
-            //    vertices[2] = new Vector3(0f + thickness, 0f, 0f + thickness);
-            //    vertices[3] = new Vector3(outerBoundary.x - thickness, 0f, 0f + thickness);
-
-            //    vertices[4] = new Vector3(outerBoundary.x, 0f, outerBoundary.z);
-            //    vertices[5] = new Vector3(0f, 0f, outerBoundary.z);
-            //    vertices[6] = new Vector3(0f, 0f, 0f);
-            //    vertices[7] = new Vector3(outerBoundary.x, 0f, 0f);
-
-            //    return vertices;
-            //}
-            return null;
+            var vertices = new System.Collections.Generic.List<Vector3>();
+            if (!Boundary.TryGetGeometry(vertices, Boundary.Type.TrackedArea))
+            {
+                Debug.LogError("Could not get geometry, have you correctly set up your tracking space?");
+                return null;
+            }
+            return vertices.ToArray();
         }
 
         /// <summary>
@@ -90,7 +76,7 @@ namespace VRTK
         /// <returns>Returns true if the play area size has been auto calibrated and set by external sensors.</returns>
         public override bool IsPlayAreaSizeCalibrated()
         {
-            return true;
+            return XRDevice.GetTrackingSpaceType() == TrackingSpaceType.RoomScale;
         }
 
         /// <summary>
@@ -99,7 +85,7 @@ namespace VRTK
         /// <returns>Returns true if the drawn border is being displayed.</returns>
         public override bool GetDrawAtRuntime()
         {
-            return false;
+            return Boundary.visible;
         }
 
         /// <summary>
@@ -108,6 +94,7 @@ namespace VRTK
         /// <param name="value">The state of whether the drawn border should be displayed or not.</param>
         public override void SetDrawAtRuntime(bool value)
         {
+            Boundary.visible = value;
         }
 
 #endif 

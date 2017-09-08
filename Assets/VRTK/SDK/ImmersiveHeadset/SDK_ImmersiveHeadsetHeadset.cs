@@ -4,27 +4,32 @@ namespace VRTK
 #if VRTK_DEFINE_SDK_ImmersiveHeadset
     using UnityEngine;
     using System.Collections.Generic;
+    using UnityEngine.XR;
+    using UnityEngine.Experimental.XR;
 #endif
 
     /// <summary>
     /// The Oculus Headset SDK script provides a bridge to the Oculus SDK.
     /// </summary>
-    [SDK_Description(typeof(SDK_OculusSystem))]
+    [SDK_Description(typeof(SDK_ImmersiveHeadsetSystem))]
     public class SDK_ImmersiveHeadsetHeadset
-#if VRTK_DEFINE_SDK_OCULUS
+#if VRTK_DEFINE_SDK_ImmersiveHeadset
         : SDK_BaseHeadset
 #else
         : SDK_FallbackHeadset
 #endif
     {
-#if VRTK_DEFINE_SDK_OCULUS
+#if VRTK_DEFINE_SDK_ImmersiveHeadset
+        private Quaternion previousHeadsetRotation;
+        private Quaternion currentHeadsetRotation;
+        private Vector3 previousHeadsetPosition;
+
         /// <summary>
         /// The ProcessUpdate method enables an SDK to run logic for every Unity Update
         /// </summary>
         /// <param name="options">A dictionary of generic options that can be used to within the update.</param>
         public override void ProcessUpdate(Dictionary<string, object> options)
         {
-
         }
 
         /// <summary>
@@ -33,7 +38,8 @@ namespace VRTK
         /// <param name="options">A dictionary of generic options that can be used to within the fixed update.</param>
         public override void ProcessFixedUpdate(Dictionary<string, object> options)
         {
-
+            CalculateAngularVelocity();
+            previousHeadsetPosition = GetHeadset().position;
         }
 
         /// <summary>
@@ -42,7 +48,7 @@ namespace VRTK
         /// <returns>A transform of the object representing the headset in the scene.</returns>
         public override Transform GetHeadset()
         {
-
+            return GetHeadsetCamera();
         }
 
         /// <summary>
@@ -51,7 +57,7 @@ namespace VRTK
         /// <returns>A transform of the object holding the headset camera in the scene.</returns>
         public override Transform GetHeadsetCamera()
         {
-
+            return Camera.main.transform;
         }
 
         /// <summary>
@@ -60,7 +66,7 @@ namespace VRTK
         /// <returns>A Vector3 containing the current velocity of the headset.</returns>
         public override Vector3 GetHeadsetVelocity()
         {
-
+            return XRDevice.isPresent ? (GetHeadset().position - previousHeadsetPosition) / Time.deltaTime : Vector3.zero;
         }
 
         /// <summary>
@@ -69,7 +75,8 @@ namespace VRTK
         /// <returns>A Vector3 containing the current angular velocity of the headset.</returns>
         public override Vector3 GetHeadsetAngularVelocity()
         {
-
+            var deltaRotation = currentHeadsetRotation * Quaternion.Inverse(previousHeadsetRotation);
+            return new Vector3(Mathf.DeltaAngle(0, deltaRotation.eulerAngles.x), Mathf.DeltaAngle(0, deltaRotation.eulerAngles.y), Mathf.DeltaAngle(0, deltaRotation.eulerAngles.z));
         }
 
         /// <summary>
@@ -80,7 +87,7 @@ namespace VRTK
         /// <param name="fadeOverlay">Determines whether to use an overlay on the fade.</param>
         public override void HeadsetFade(Color color, float duration, bool fadeOverlay = false)
         {
-
+            VRTK_ScreenFade.Start(color, duration);
         }
 
         /// <summary>
@@ -90,7 +97,11 @@ namespace VRTK
         /// <returns>Returns true if the headset has fade functionality on it.</returns>
         public override bool HasHeadsetFade(Transform obj)
         {
-
+            if (obj.GetComponentInChildren<VRTK_ScreenFade>())
+            {
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
@@ -99,7 +110,16 @@ namespace VRTK
         /// <param name="camera">The Transform to with the camera on to add the fade functionality to.</param>
         public override void AddHeadsetFade(Transform camera)
         {
+            if (camera && !camera.GetComponent<VRTK_ScreenFade>())
+            {
+                camera.gameObject.AddComponent<VRTK_ScreenFade>();
+            }
+        }
 
+        private void CalculateAngularVelocity()
+        {
+            previousHeadsetRotation = currentHeadsetRotation;
+            currentHeadsetRotation = GetHeadset().transform.rotation;
         }
 #endif
     }
