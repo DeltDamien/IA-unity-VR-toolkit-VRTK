@@ -37,7 +37,9 @@ namespace VRTK
             OculusRiftCV1,
             Vive,
             ViveMV,
-            ViveDVT
+            ViveDVT,
+            AcerImmersiveHeadsetDV,
+            HPImmersiveHeadsetDV
         }
 
         private static string cachedHeadsetType = "";
