@@ -306,7 +306,7 @@ namespace VRTK
             GameObject model = GetSDKManagerControllerModelForHand(hand);
             if (model == null)
             {
-                GameObject avatarObject = GetHeadset();
+                GameObject avatarObject = null; // = GetHeadset();
                 switch (hand)
                 {
                     case ControllerHand.Left:
