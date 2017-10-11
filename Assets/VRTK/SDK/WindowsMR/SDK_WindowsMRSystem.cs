@@ -1,18 +1,18 @@
 ﻿namespace VRTK
 {
-#if VRTK_DEFINE_SDK_IMMERSIVEMR
+#if VRTK_DEFINE_SDK_WINDOWSMR
     using UnityEngine.XR.WSA;
 #endif
 
-    [SDK_Description("ImmersiveMR", SDK_ImmersiveMRDefines.ScriptingDefineSymbol, "WSA_XR", "Standalone")]
-    public class SDK_ImmersiveMRSystem
-#if VRTK_DEFINE_SDK_IMMERSIVEMR
+    [SDK_Description("WindowsMR", SDK_WindowsMRDefines.ScriptingDefineSymbol, null, "WSA")]
+    public class SDK_WindowsMR
+#if VRTK_DEFINE_SDK_WINDOWSMR
         : SDK_BaseSystem
 #else
-        :SDK_FallbackSystem
+        : SDK_FallbackSystem
 #endif
     {
-#if VRTK_DEFINE_SDK_IMMERSIVEMR
+#if VRTK_DEFINE_SDK_WINDOWSMR
         /// <summary>
         /// The ForceInterleavedReprojectionOn method determines whether Interleaved Reprojection should be forced on or off.
         /// </summary>

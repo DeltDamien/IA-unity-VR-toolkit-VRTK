@@ -1,21 +1,30 @@
 ﻿namespace VRTK
 {
     using System;
+    using UnityEngine.XR;
 
     /// <summary>
-    /// Handles all the scripting define symbols for the Immersive Mixed Reality SDK.
+    /// Handles all the scripting define symbols for the Windows Immersive Mixed Reality SDK.
     /// </summary>
-    public static class SDK_ImmersiveMRDefines
+    public static class SDK_WindowsMRDefines
     {
         /// <summary>
         /// The scripting define symbol for the Immersive Mixed Reality SDK.
         /// </summary>
-        public const string ScriptingDefineSymbol = SDK_ScriptingDefineSymbolPredicateAttribute.RemovableSymbolPrefix + "SDK_IMMERSIVEMR";
+        public const string ScriptingDefineSymbol = SDK_ScriptingDefineSymbolPredicateAttribute.RemovableSymbolPrefix + "SDK_WINDOWSMR";
 
-        private const string BuildTargetGroupName = "Standalone";
+        private const string BuildTargetGroupName = "WSA";
+
+        
+        [SDK_ScriptingDefineSymbolPredicate(ScriptingDefineSymbol, "WSA")]
+        private static bool IsXRSettingsEnabled()
+        {
+            //bool enabled = XRSettings.enabled;
+            return true;
+        }
+        
 
         // TODO: Version checking (see below)
-
         /*
         [SDK_ScriptingDefineSymbolPredicate(ScriptingDefineSymbol, BuildTargetGroupName)]
         [SDK_ScriptingDefineSymbolPredicate(SDK_ScriptingDefineSymbolPredicateAttribute.RemovableSymbolPrefix + "OCULUS_UTILITIES_1_12_0_OR_NEWER", BuildTargetGroupName)]

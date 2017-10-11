@@ -4,17 +4,17 @@
     using UnityEngine;
 
     /// <summary>
-    /// The ImmersiveMR Headset SDK script provides a bridge to the ImmersiveMR XR.
+    /// The WindowsMR Headset SDK script provides a bridge to the WindowsMR XR.
     /// </summary>
-    [SDK_Description(typeof(SDK_ImmersiveMRSystem))]
-    public class SDK_ImmersiveMRHeadset
-#if VRTK_DEFINE_SDK_IMMERSIVEMR
+    [SDK_Description(typeof(SDK_WindowsMR))]
+    public class SDK_WindowsMRHeadset
+#if VRTK_DEFINE_SDK_WINDOWSMR
         : SDK_BaseHeadset
 #else
         : SDK_FallbackHeadset
 #endif
     {
-#if VRTK_DEFINE_SDK_IMMERSIVEMR
+#if VRTK_DEFINE_SDK_WINDOWSMR
         private Vector3 currentHeadsetPosition;
         private Vector3 previousHeadsetPosition;
         private Vector3 currentHeadsetVelocity;
@@ -22,7 +22,7 @@
         private Quaternion currentHeadsetRotation;
         private Quaternion previousHeadsetRotation;
 
-#region Overriden base functions
+        #region Overriden base functions
         /// <summary>
         /// The ProcessFixedUpdate method enables an SDK to run logic for every Unity FixedUpdate
         /// </summary>
@@ -51,7 +51,7 @@
             cachedHeadset = GetSDKManagerHeadset();
             if(cachedHeadset == null)
             {
-                ImmersiveMR_Camera foundCamera = VRTK_SharedMethods.FindEvenInactiveComponent<ImmersiveMR_Camera>();
+                WindowsMR_Camera foundCamera = VRTK_SharedMethods.FindEvenInactiveComponent<WindowsMR_Camera>();
 
                 if(foundCamera)
                 {
@@ -128,7 +128,7 @@
                 camera.gameObject.AddComponent<VRTK_ScreenFade>();
             }
         }
-#endregion
+        #endregion
 
         /// <summary>
         /// Update rotation values of headset.

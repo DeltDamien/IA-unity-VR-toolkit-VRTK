@@ -5,7 +5,7 @@ using UnityEngine.XR.WSA.Input;
 
 namespace VRTK
 {
-    public class ImmersiveMR_TrackedObject : MonoBehaviour
+    public class WindowsMR_TrackedObject : MonoBehaviour
     {
 
         private struct ButtonState

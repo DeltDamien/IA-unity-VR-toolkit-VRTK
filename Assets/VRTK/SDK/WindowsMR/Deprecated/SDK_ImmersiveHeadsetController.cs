@@ -359,7 +359,7 @@ namespace VRTK
 
         public override ControllerType GetCurrentControllerType()
         {
-            return ControllerType.ImmersiveHeadset_Motioncontroller;
+            return ControllerType.WindowsMR_MotionController;
         }
 
         public override SDK_ControllerHapticModifiers GetHapticModifiers()

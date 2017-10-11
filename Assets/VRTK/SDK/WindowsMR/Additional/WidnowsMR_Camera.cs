@@ -7,7 +7,7 @@
     /// Camera script for the main camera for Immersive Mixed Reality. 
     /// </summary>
     [RequireComponent (typeof(Camera))]
-    public class ImmersiveMR_Camera : MonoBehaviour
+    public class WindowsMR_Camera : MonoBehaviour
     {
         /// <summary>
         /// Name of the Windows Mixed Reality Device as listed in XRSettings.
