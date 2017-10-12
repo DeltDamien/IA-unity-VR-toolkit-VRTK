@@ -79,7 +79,7 @@ namespace VRTK
         private Vector3 angularVelocity;
         public Vector3 AngularVelocity { get { return angularVelocity; } }
 
-        public float hairTriggerDelta = 0.1f; // amount trigger must be pulled or released to change state
+        private float hairTriggerDelta = 0.1f; // amount trigger must be pulled or released to change state
         private float hairTriggerLimit;
         private bool hairTriggerState;
         private bool hairTriggerPrevState;
@@ -94,7 +94,7 @@ namespace VRTK
             InteractionManager.InteractionSourcePressed += InteractionManager_InteractionSourcePressed;
         }
 
-    #region Getter functions
+        #region Getter functions
         public bool GetPress(InteractionSourcePressType button)
         {
             return true;

@@ -4,7 +4,7 @@
     using UnityEngine.XR.WSA;
 #endif
 
-    [SDK_Description("WindowsMR", SDK_WindowsMRDefines.ScriptingDefineSymbol, null, "WSA")]
+    [SDK_Description("WindowsMR", SDK_WindowsMRDefines.ScriptingDefineSymbol, "WindowsMR", "WSA")]
     public class SDK_WindowsMR
 #if VRTK_DEFINE_SDK_WINDOWSMR
         : SDK_BaseSystem
