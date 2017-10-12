@@ -99,36 +99,49 @@ namespace VRTK
         #region Getter functions
         public bool GetPress(InteractionSourcePressType button)
         {
-            return true;
+            Debug.Log("GetPress " + button);
+            switch(button)
+            {
+                case InteractionSourcePressType.Select:
+                    return currentButtonState.SelectPressed;
+            }
+            return false;
         }
 
         public bool GetPressDown(InteractionSourcePressType button)
         {
-            return true;
+            Debug.Log("GetPressDown " + button);
+            switch (button)
+            {
+                case InteractionSourcePressType.Select:
+                    return currentButtonState.SelectPressed;
+            }
+            return false;
         }
 
         public bool GetPressUp(InteractionSourcePressType button)
         {
-            return true;
+            return false;
         }
 
         public bool GetTouch(InteractionSourcePressType button)
         {
-            return true;
+            return false;
         }
 
         public bool GetTouchDown(InteractionSourcePressType button)
         {
-            return true;
+            return false;
         }
 
         public bool GetTouchUp(InteractionSourcePressType button)
         {
-            return true;
+            return false;
         }
 
         public Vector2 GetAxis(InteractionSourcePressType button)
         {
+            Debug.Log("GetAxis " + currentButtonState.TouchpadPosition);
             switch(button)
             {
                 case InteractionSourcePressType.Touchpad:
@@ -235,21 +248,28 @@ namespace VRTK
                 currentButtonState.SelectPressed = state.selectPressed;
                 currentButtonState.SelectPressedAmount = state.selectPressedAmount;
 
+                // BOTH ARE ALWAYS TRUE!!! IS THIS SUPPOSED TO BE LIKE THAT???!!!!
+                Debug.Log("Grasp " + source.supportsGrasp + " Menu " + source.supportsMenu);
+
                 if (source.supportsGrasp)
                 {
+                    Debug.Log("Support grasp " + state.grasped);
                     currentButtonState.Grasped = state.grasped;
                 }
                 else if (source.supportsMenu)
                 {
+                    Debug.Log("Support menu " + state.menuPressed);
                     currentButtonState.MenuPressed = state.menuPressed;
                 }
                 else if (source.supportsThumbstick)
                 {
+                    Debug.Log("Support thumbstick " + state.thumbstickPosition);
                     currentButtonState.ThumbstickPosition = state.thumbstickPosition;
                     currentButtonState.ThumbstickPressed = state.thumbstickPressed;
                 }
                 else if (source.supportsTouchpad)
                 {
+                    Debug.Log("Support touchpad " + state.touchpadPosition);
                     currentButtonState.TouchpadPosition = state.touchpadPosition;
                     currentButtonState.TouchpadPressed = state.touchpadPressed;
                     currentButtonState.TouchpadTouched = state.touchpadTouched;

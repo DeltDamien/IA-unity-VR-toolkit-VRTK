@@ -60,6 +60,8 @@
                 camera.tag = "MainCamera";
             }
 
+            camera.nearClipPlane = 0.01f;
+
             if(camera.stereoTargetEye != StereoTargetEyeMask.Both)
             {
                 Debug.LogError("Target eye of main camera is not set to both. Are you sure you want to render only one eye?");

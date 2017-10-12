@@ -39,7 +39,7 @@
         public override Vector2 GetButtonAxis(ButtonTypes buttonType, VRTK_ControllerReference controllerReference)
         {
             uint index = VRTK_ControllerReference.GetRealIndex(controllerReference);
-            WindowsMR_TrackedObject device = GetControllerByIndex(index).GetComponent<WindowsMR_TrackedObject>();
+            WindowsMR_TrackedObject device = GetControllerByIndex(index, true).GetComponent<WindowsMR_TrackedObject>();
 
             switch (buttonType)
             {
@@ -72,7 +72,7 @@
                 case ButtonTypes.Trigger:
                     return IsButtonPressed(index, pressType, InteractionSourcePressType.Select);
                 case ButtonTypes.TriggerHairline:
-                    WindowsMR_TrackedObject device = GetControllerByIndex(index).GetComponent<WindowsMR_TrackedObject>();
+                    WindowsMR_TrackedObject device = GetControllerByIndex(index, true).GetComponent<WindowsMR_TrackedObject>();
 
                     if (pressType == ButtonPressTypes.PressDown)
                     {
@@ -109,7 +109,7 @@
                     {
                         return (actual ? sdkManager.loadedSetup.actualLeftController : sdkManager.scriptAliasLeftController);
                     }
-
+                    
                     if (cachedRightTrackedObject != null && (uint)cachedRightTrackedObject.Index == index)
                     {
                         return (actual ? sdkManager.loadedSetup.actualRightController : sdkManager.scriptAliasRightController);
@@ -139,14 +139,18 @@
 
         public override uint GetControllerIndex(GameObject controller)
         {
-            //TODO: Implement
-            return 0;
+            WindowsMR_TrackedObject trackedObject = GetTrackedObject(controller);
+            return (trackedObject != null ? (uint)trackedObject.Index : uint.MaxValue);
         }
 
         public override GameObject GetControllerLeftHand(bool actual = false)
         {
-            //TODO: Implement
-            return null;
+            GameObject controller = GetSDKManagerControllerLeftHand(actual);
+            if (controller == null && actual)
+            {
+                controller = VRTK_SharedMethods.FindEvenInactiveGameObject<WindowsMR_ControllerManager>("Controller (left)");
+            }
+            return controller;
         }
 
         public override GameObject GetControllerModel(GameObject controller)
@@ -157,8 +161,26 @@
 
         public override GameObject GetControllerModel(ControllerHand hand)
         {
-            //TODO: Implement
-            return null;
+            GameObject model = GetSDKManagerControllerModelForHand(hand);
+            if (model == null)
+            {
+                GameObject controller = null;
+                switch (hand)
+                {
+                    case ControllerHand.Left:
+                        controller = GetControllerLeftHand(true);
+                        break;
+                    case ControllerHand.Right:
+                        controller = GetControllerRightHand(true);
+                        break;
+                }
+
+                if (controller != null)
+                {
+                    model = controller.transform.GetChild(0).gameObject;
+                }
+            }
+            return model;
         }
 
         public override Transform GetControllerOrigin(VRTK_ControllerReference controllerReference)
@@ -175,8 +197,12 @@
 
         public override GameObject GetControllerRightHand(bool actual = false)
         {
-            //TODO: Implement
-            return null;
+            GameObject controller = GetSDKManagerControllerRightHand(actual);
+            if (controller == null && actual)
+            {
+                controller = VRTK_SharedMethods.FindEvenInactiveGameObject<WindowsMR_ControllerManager>("Controller (right)");
+            }
+            return controller;
         }
 
         public override ControllerType GetCurrentControllerType()
@@ -216,8 +242,7 @@
 
         public override bool IsControllerLeftHand(GameObject controller, bool actual)
         {
-            // TODO: Implement
-            return false;
+            return CheckControllerLeftHand(controller, actual);
         }
 
         public override bool IsControllerRightHand(GameObject controller)
@@ -227,8 +252,7 @@
 
         public override bool IsControllerRightHand(GameObject controller, bool actual)
         {
-            // TODO: Implement
-            return false;
+            return CheckControllerRightHand(controller, actual);
         }
 
         public override bool IsTouchpadStatic(bool isTouched, Vector2 currentAxisValues, Vector2 previousAxisValues, int compareFidelity)
@@ -321,7 +345,8 @@
             }
             */
 
-            WindowsMR_TrackedObject device = GetControllerByIndex(index).GetComponent<WindowsMR_TrackedObject>();
+            bool actual = true;
+            WindowsMR_TrackedObject device = GetControllerByIndex(index, actual).GetComponent<WindowsMR_TrackedObject>();
 
             switch (type)
             {
