@@ -86,12 +86,14 @@ namespace VRTK
 
         private void Start()
         {
+            Debug.Log("Start controller " + handedness);
             InteractionManager.InteractionSourceDetected += InteractionManager_InteractionSourceDetected;
             InteractionManager.InteractionSourceUpdated += InteractionManager_InteractionSourceUpdated;
             InteractionManager.InteractionSourceLost += InteractionManager_InteractionSourceLost;
 
             // TODO: Check if needed
             InteractionManager.InteractionSourcePressed += InteractionManager_InteractionSourcePressed;
+            InteractionManager.InteractionSourceReleased += InteractionManager_InteractionSourceReleased;
         }
 
         #region Getter functions
@@ -167,6 +169,7 @@ namespace VRTK
             {
                 index = source.id;
                 currentButtonState = new ButtonState();
+                Debug.Log("New controller detected " + source.handedness);
             }
         }
 
@@ -191,7 +194,24 @@ namespace VRTK
 
         private void InteractionManager_InteractionSourcePressed(InteractionSourcePressedEventArgs args)
         {
+            InteractionSourceState state = args.state;
+            InteractionSource source = state.source;
 
+            if (source.kind == InteractionSourceKind.Controller && source.handedness == handedness)
+            {
+                // TODO
+            }
+        }
+        
+        private void InteractionManager_InteractionSourceReleased(InteractionSourceReleasedEventArgs args)
+        {
+            InteractionSourceState state = args.state;
+            InteractionSource source = state.source;
+
+            if (source.kind == InteractionSourceKind.Controller && source.handedness == handedness)
+            {
+                // TODO
+            }
         }
         #endregion
 
@@ -234,7 +254,7 @@ namespace VRTK
                     currentButtonState.TouchpadPressed = state.touchpadPressed;
                     currentButtonState.TouchpadTouched = state.touchpadTouched;
                 }
-
+                
                 UpdateAngularVelocity(state.sourcePose);
                 UpdateControllerPose(state.sourcePose);
             }
@@ -245,13 +265,13 @@ namespace VRTK
             Quaternion newRotation;
             if (pose.TryGetRotation(out newRotation, InteractionSourceNode.Grip))
             {
-
+                transform.localRotation = newRotation;
             }
 
             Vector3 newPosition;
             if (pose.TryGetPosition(out newPosition, InteractionSourceNode.Grip))
             {
-
+                transform.localPosition = newPosition;
             }
         }
 
