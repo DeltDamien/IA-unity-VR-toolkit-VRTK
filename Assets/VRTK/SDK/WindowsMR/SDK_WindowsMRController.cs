@@ -10,7 +10,6 @@
     [SDK_Description(typeof(SDK_WindowsMR))]
     public class SDK_WindowsMRController : SDK_BaseController
     {
-
         protected WindowsMR_TrackedObject cachedLeftTrackedObject;
         protected WindowsMR_TrackedObject cachedRightTrackedObject;
 
@@ -44,6 +43,10 @@
             switch (buttonType)
             {
                 case ButtonTypes.Touchpad:
+                    if(device.GetAxis(InteractionSourcePressType.Touchpad) == Vector2.zero)
+                    {
+                        return device.GetAxis(InteractionSourcePressType.Thumbstick);
+                    }
                     return device.GetAxis(InteractionSourcePressType.Touchpad);
                 case ButtonTypes.Thumbstick:
                     return device.GetAxis(InteractionSourcePressType.Thumbstick);
@@ -89,10 +92,12 @@
                     return IsButtonPressed(index, pressType, InteractionSourcePressType.Touchpad);
                 case ButtonTypes.ButtonOne:
                     //return IsButtonPressed(index, pressType, (1ul << (int)EVRButtonId.k_EButton_A));
+                    return false;
                 case ButtonTypes.ButtonTwo:
-                    return IsButtonPressed(index, pressType, InteractionSourcePressType.Menu);
+                    //return IsButtonPressed(index, pressType, InteractionSourcePressType.Menu);
+                    return false;
                 case ButtonTypes.StartMenu:
-                    return IsButtonPressed(index, pressType, InteractionSourcePressType.None); //TODO
+                    return IsButtonPressed(index, pressType, InteractionSourcePressType.Menu);
             }
             return false;
         }
@@ -338,13 +343,6 @@
 
         protected virtual bool IsButtonPressed(uint index, ButtonPressTypes type, InteractionSourcePressType button)
         {
-            /*
-            if (index >= OpenVR.k_unTrackedDeviceIndexInvalid)
-            {
-                return false;
-            }
-            */
-
             bool actual = true;
             WindowsMR_TrackedObject device = GetControllerByIndex(index, actual).GetComponent<WindowsMR_TrackedObject>();
 

@@ -75,6 +75,7 @@ namespace VRTK
         public uint Index { get { return index; } }
 
         private ButtonState currentButtonState;
+        private ButtonState prevButtonState;
 
         private Vector3 angularVelocity;
         public Vector3 AngularVelocity { get { return angularVelocity; } }
@@ -84,64 +85,103 @@ namespace VRTK
         private bool hairTriggerState;
         private bool hairTriggerPrevState;
 
+        private bool isDetected;
+
         private void Start()
         {
             Debug.Log("Start controller " + handedness);
             InteractionManager.InteractionSourceDetected += InteractionManager_InteractionSourceDetected;
-            InteractionManager.InteractionSourceUpdated += InteractionManager_InteractionSourceUpdated;
+            // InteractionManager.InteractionSourceUpdated updates too often and messes up Down and Up.
+            // Only used for controller position.
+            // Might be better in future releases.
+            //InteractionManager.InteractionSourceUpdated += InteractionManager_InteractionSourceUpdated;
             InteractionManager.InteractionSourceLost += InteractionManager_InteractionSourceLost;
+        }
 
-            // TODO: Check if needed
-            InteractionManager.InteractionSourcePressed += InteractionManager_InteractionSourcePressed;
-            InteractionManager.InteractionSourceReleased += InteractionManager_InteractionSourceReleased;
+        private void Update()
+        {
+            if (isDetected)
+            {
+                UpdateStates();
+                UpdateHairTrigger();
+            }
         }
 
         #region Getter functions
         public bool GetPress(InteractionSourcePressType button)
         {
-            Debug.Log("GetPress " + button);
             switch(button)
             {
                 case InteractionSourcePressType.Select:
                     return currentButtonState.SelectPressed;
+                case InteractionSourcePressType.Grasp:
+                    return currentButtonState.Grasped;
+                case InteractionSourcePressType.Menu:
+                    return prevButtonState.MenuPressed;
             }
             return false;
         }
 
         public bool GetPressDown(InteractionSourcePressType button)
         {
-            Debug.Log("GetPressDown " + button);
             switch (button)
             {
                 case InteractionSourcePressType.Select:
-                    return currentButtonState.SelectPressed;
+                    return prevButtonState.SelectPressed == false && currentButtonState.SelectPressed == true;
+                case InteractionSourcePressType.Grasp:
+                    return prevButtonState.Grasped == false && currentButtonState.Grasped == true;
+                case InteractionSourcePressType.Menu:
+                    return prevButtonState.MenuPressed == false && currentButtonState.MenuPressed == true;
             }
             return false;
         }
 
         public bool GetPressUp(InteractionSourcePressType button)
         {
+            switch (button)
+            {
+                case InteractionSourcePressType.Select:
+                    return prevButtonState.SelectPressed == true && currentButtonState.SelectPressed == false;
+                case InteractionSourcePressType.Grasp:
+                    return prevButtonState.Grasped == true && currentButtonState.Grasped == false;
+                case InteractionSourcePressType.Menu:
+                    return prevButtonState.MenuPressed == true && currentButtonState.MenuPressed == false;
+            }
             return false;
         }
 
         public bool GetTouch(InteractionSourcePressType button)
         {
+            switch (button)
+            {
+                case InteractionSourcePressType.Touchpad:
+                    return currentButtonState.TouchpadTouched;
+            }
             return false;
         }
 
         public bool GetTouchDown(InteractionSourcePressType button)
         {
+            switch (button)
+            {
+                case InteractionSourcePressType.Touchpad:
+                    return prevButtonState.TouchpadTouched == false && currentButtonState.TouchpadTouched == true;
+            }
             return false;
         }
 
         public bool GetTouchUp(InteractionSourcePressType button)
         {
+            switch (button)
+            {
+                case InteractionSourcePressType.Touchpad:
+                    return prevButtonState.TouchpadTouched == true && currentButtonState.TouchpadTouched == false;
+            }
             return false;
         }
 
         public Vector2 GetAxis(InteractionSourcePressType button)
         {
-            Debug.Log("GetAxis " + currentButtonState.TouchpadPosition);
             switch(button)
             {
                 case InteractionSourcePressType.Touchpad:
@@ -150,24 +190,23 @@ namespace VRTK
                 case InteractionSourcePressType.Thumbstick:
                     return currentButtonState.ThumbstickPosition;
             }
-
             return Vector2.zero;
         }
 
         public bool GetHairTrigger()
         {
-            // Update(); Needed?
+            //Update();
             return hairTriggerState;
         }
 
         public bool GetHairTriggerDown()
         {
-            //Update(); Needed?
+            //Update();
             return hairTriggerState && !hairTriggerPrevState;
         }
         public bool GetHairTriggerUp()
         {
-            //Update(); Needed?
+            //Update();
             return !hairTriggerState && hairTriggerPrevState;
         }
         #endregion
@@ -182,6 +221,7 @@ namespace VRTK
             {
                 index = source.id;
                 currentButtonState = new ButtonState();
+                isDetected = true;
                 Debug.Log("New controller detected " + source.handedness);
             }
         }
@@ -193,37 +233,22 @@ namespace VRTK
 
             if (source.kind == InteractionSourceKind.Controller && source.handedness == handedness)
             {
-                //TODO: delete something or make it gone or whatever helps
+                index = uint.MaxValue;
+                currentButtonState = new ButtonState();
+                isDetected = false;
+                Debug.Log("Controller lost " + source.handedness);
             }
         }
 
         private void InteractionManager_InteractionSourceUpdated(InteractionSourceUpdatedEventArgs args)
         {
-            // TODO: is this also triggered on pressed? Is it for position?
-            InteractionSourceState state = args.state;
-
-            UpdateInteractionState(state);
-        }
-
-        private void InteractionManager_InteractionSourcePressed(InteractionSourcePressedEventArgs args)
-        {
             InteractionSourceState state = args.state;
             InteractionSource source = state.source;
 
             if (source.kind == InteractionSourceKind.Controller && source.handedness == handedness)
             {
-                // TODO
-            }
-        }
-        
-        private void InteractionManager_InteractionSourceReleased(InteractionSourceReleasedEventArgs args)
-        {
-            InteractionSourceState state = args.state;
-            InteractionSource source = state.source;
-
-            if (source.kind == InteractionSourceKind.Controller && source.handedness == handedness)
-            {
-                // TODO
+                //UpdateInteractionState(state);
+                UpdatePose(state);
             }
         }
         #endregion
@@ -239,44 +264,45 @@ namespace VRTK
             }
         }
 
+        private void UpdatePose(InteractionSourceState state)
+        {
+            UpdateAngularVelocity(state.sourcePose);
+            UpdateControllerPose(state.sourcePose);
+        }
+
         private void UpdateInteractionState(InteractionSourceState state)
         {
             InteractionSource source = state.source;
 
             if (source.handedness == handedness && source.id == index)
             {
+                prevButtonState = currentButtonState;
+
                 currentButtonState.SelectPressed = state.selectPressed;
                 currentButtonState.SelectPressedAmount = state.selectPressedAmount;
 
-                // BOTH ARE ALWAYS TRUE!!! IS THIS SUPPOSED TO BE LIKE THAT???!!!!
-                Debug.Log("Grasp " + source.supportsGrasp + " Menu " + source.supportsMenu);
-
                 if (source.supportsGrasp)
                 {
-                    Debug.Log("Support grasp " + state.grasped);
                     currentButtonState.Grasped = state.grasped;
                 }
-                else if (source.supportsMenu)
+
+                if (source.supportsMenu)
                 {
-                    Debug.Log("Support menu " + state.menuPressed);
                     currentButtonState.MenuPressed = state.menuPressed;
                 }
-                else if (source.supportsThumbstick)
+
+                if (source.supportsThumbstick)
                 {
-                    Debug.Log("Support thumbstick " + state.thumbstickPosition);
                     currentButtonState.ThumbstickPosition = state.thumbstickPosition;
                     currentButtonState.ThumbstickPressed = state.thumbstickPressed;
                 }
-                else if (source.supportsTouchpad)
+
+                if (source.supportsTouchpad)
                 {
-                    Debug.Log("Support touchpad " + state.touchpadPosition);
                     currentButtonState.TouchpadPosition = state.touchpadPosition;
                     currentButtonState.TouchpadPressed = state.touchpadPressed;
                     currentButtonState.TouchpadTouched = state.touchpadTouched;
                 }
-                
-                UpdateAngularVelocity(state.sourcePose);
-                UpdateControllerPose(state.sourcePose);
             }
         }
 
