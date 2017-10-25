@@ -94,7 +94,7 @@ namespace VRTK
             // InteractionManager.InteractionSourceUpdated updates too often and messes up Down and Up.
             // Only used for controller position.
             // Might be better in future releases.
-            //InteractionManager.InteractionSourceUpdated += InteractionManager_InteractionSourceUpdated;
+            InteractionManager.InteractionSourceUpdated += InteractionManager_InteractionSourceUpdated;
             InteractionManager.InteractionSourceLost += InteractionManager_InteractionSourceLost;
         }
 

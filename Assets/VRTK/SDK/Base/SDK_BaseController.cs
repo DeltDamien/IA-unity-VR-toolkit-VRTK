@@ -23,6 +23,7 @@ namespace VRTK
         /// <param name="Trigger">Trigger on the controller.</param>
         /// <param name="TriggerHairline">Trigger Hairline on the controller.</param>
         /// <param name="Touchpad">Touchpad on the controller.</param>
+        /// <param name="Thumbstick">Thumbstick on the controller.</param>
         public enum ButtonTypes
         {
             ButtonOne,
@@ -33,6 +34,7 @@ namespace VRTK
             Trigger,
             TriggerHairline,
             Touchpad,
+            Thumbstick
         }
 
         /// <summary>
@@ -116,7 +118,8 @@ namespace VRTK
             Oculus_OculusTouch,
             Daydream_Controller,
             Ximmerse_Flip,
-            ImmersiveHeadset_Motioncontroller
+            ImmersiveHeadset_Motioncontroller,
+            WindowsMR_MotionController
         }
 
         /// <summary>
