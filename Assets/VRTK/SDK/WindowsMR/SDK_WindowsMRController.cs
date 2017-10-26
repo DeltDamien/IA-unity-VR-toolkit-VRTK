@@ -134,7 +134,7 @@
         public override string GetControllerDefaultColliderPath(ControllerHand hand)
         {
             //TODO: Implement
-            return "";
+            return "ControllerColliders/Fallback";
         }
 
         public override string GetControllerElementPath(ControllerElements element, ControllerHand hand, bool fullPath = false)
@@ -161,8 +161,7 @@
 
         public override GameObject GetControllerModel(GameObject controller)
         {
-            //TODO: Implement
-            return null;
+            return GetControllerModelFromController(controller);
         }
 
         public override GameObject GetControllerModel(ControllerHand hand)
