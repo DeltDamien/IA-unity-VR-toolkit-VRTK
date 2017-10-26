@@ -117,7 +117,9 @@ namespace VRTK
                 case InteractionSourcePressType.Grasp:
                     return currentButtonState.Grasped;
                 case InteractionSourcePressType.Menu:
-                    return prevButtonState.MenuPressed;
+                    return currentButtonState.MenuPressed;
+                case InteractionSourcePressType.Touchpad:
+                    return currentButtonState.TouchpadPressed;
             }
             return false;
         }
@@ -132,6 +134,8 @@ namespace VRTK
                     return prevButtonState.Grasped == false && currentButtonState.Grasped == true;
                 case InteractionSourcePressType.Menu:
                     return prevButtonState.MenuPressed == false && currentButtonState.MenuPressed == true;
+                case InteractionSourcePressType.Touchpad:
+                    return prevButtonState.TouchpadPressed == false && currentButtonState.TouchpadPressed == true;
             }
             return false;
         }
@@ -146,6 +150,8 @@ namespace VRTK
                     return prevButtonState.Grasped == true && currentButtonState.Grasped == false;
                 case InteractionSourcePressType.Menu:
                     return prevButtonState.MenuPressed == true && currentButtonState.MenuPressed == false;
+                case InteractionSourcePressType.Touchpad:
+                    return prevButtonState.TouchpadPressed == true && currentButtonState.TouchpadPressed == false;
             }
             return false;
         }
@@ -276,6 +282,8 @@ namespace VRTK
 
             if (source.handedness == handedness && source.id == index)
             {
+                Debug.Log("UpdateInteractionState " + handedness);
+
                 prevButtonState = currentButtonState;
 
                 currentButtonState.SelectPressed = state.selectPressed;

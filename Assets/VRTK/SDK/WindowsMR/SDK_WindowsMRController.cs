@@ -38,6 +38,7 @@
         public override Vector2 GetButtonAxis(ButtonTypes buttonType, VRTK_ControllerReference controllerReference)
         {
             uint index = VRTK_ControllerReference.GetRealIndex(controllerReference);
+
             WindowsMR_TrackedObject device = GetControllerByIndex(index, true).GetComponent<WindowsMR_TrackedObject>();
 
             switch (buttonType)
