@@ -76,6 +76,7 @@
                 case ButtonTypes.Trigger:
                     return IsButtonPressed(index, pressType, InteractionSourcePressType.Select);
                 case ButtonTypes.TriggerHairline:
+                    Debug.Log("TriggerHairline: " + GetControllerByIndex(index, true).name);
                     WindowsMR_TrackedObject device = GetControllerByIndex(index, true).GetComponent<WindowsMR_TrackedObject>();
 
                     if (pressType == ButtonPressTypes.PressDown)
