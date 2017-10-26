@@ -102,7 +102,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4388258453294924}
   - component: {fileID: 33434593058752250}
-  - component: {fileID: 135977563570988776}
   - component: {fileID: 23034618564273552}
   m_Layer: 0
   m_Name: Sphere
@@ -151,7 +150,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4590382374420924}
   - component: {fileID: 33652552632092160}
-  - component: {fileID: 135141579477622690}
   - component: {fileID: 23801747900749062}
   m_Layer: 0
   m_Name: Sphere
@@ -226,7 +224,7 @@ Transform:
   m_GameObject: {fileID: 1429369508185078}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_Children: []
   m_Father: {fileID: 4870995885051894}
   m_RootOrder: 0
@@ -252,7 +250,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1184073839767440}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4979524128693414}
@@ -266,7 +264,7 @@ Transform:
   m_GameObject: {fileID: 1712986836815986}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.19999999, y: 0.19999999, z: 0.19999999}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_Children: []
   m_Father: {fileID: 4035052268943572}
   m_RootOrder: 0
@@ -306,7 +304,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1546197886163394}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4494465642766342}
@@ -454,8 +452,8 @@ MonoBehaviour:
   actualHeadset: {fileID: 1184073839767440}
   actualLeftController: {fileID: 1319151269250058}
   actualRightController: {fileID: 1383898260718170}
-  modelAliasLeftController: {fileID: 0}
-  modelAliasRightController: {fileID: 0}
+  modelAliasLeftController: {fileID: 1142072741433534}
+  modelAliasRightController: {fileID: 1779365483283994}
   cachedSystemSDKInfo:
     baseTypeName: VRTK.SDK_BaseSystem
     fallbackTypeName: VRTK.SDK_FallbackSystem
@@ -529,27 +527,3 @@ Behaviour:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1184073839767440}
   m_Enabled: 1
---- !u!135 &135141579477622690
-SphereCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1712986836815986}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!135 &135977563570988776
-SphereCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1429369508185078}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}

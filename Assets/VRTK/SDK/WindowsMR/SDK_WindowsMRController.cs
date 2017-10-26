@@ -31,7 +31,7 @@
             }
 
             uint index = VRTK_ControllerReference.GetRealIndex(controllerReference);
-            WindowsMR_TrackedObject device = GetControllerByIndex(index).GetComponent<WindowsMR_TrackedObject>();
+            WindowsMR_TrackedObject device = GetControllerByIndex(index).transform.parent.GetComponent<WindowsMR_TrackedObject>();
             return device.AngularVelocity;
         }
 
@@ -140,7 +140,7 @@
         public override string GetControllerElementPath(ControllerElements element, ControllerHand hand, bool fullPath = false)
         {
             //TODO: Implement
-            return "";
+            return null;
         }
 
         public override uint GetControllerIndex(GameObject controller)
@@ -190,8 +190,7 @@
 
         public override Transform GetControllerOrigin(VRTK_ControllerReference controllerReference)
         {
-            //TODO: Implement
-            return null;
+            return VRTK_SDK_Bridge.GetPlayArea();
         }
 
         public override GameObject GetControllerRenderModel(VRTK_ControllerReference controllerReference)
