@@ -92,8 +92,7 @@ namespace VRTK
             Debug.Log("Start controller " + handedness);
             InteractionManager.InteractionSourceDetected += InteractionManager_InteractionSourceDetected;
             // InteractionManager.InteractionSourceUpdated updates too often and messes up Down and Up.
-            // Only used for controller position.
-            // Might be better in future releases.
+            // Only used for controller position. Might be better in future releases.
             InteractionManager.InteractionSourceUpdated += InteractionManager_InteractionSourceUpdated;
             InteractionManager.InteractionSourceLost += InteractionManager_InteractionSourceLost;
         }
@@ -120,6 +119,8 @@ namespace VRTK
                     return currentButtonState.MenuPressed;
                 case InteractionSourcePressType.Touchpad:
                     return currentButtonState.TouchpadPressed;
+                case InteractionSourcePressType.Thumbstick:
+                    return currentButtonState.ThumbstickPressed;
             }
             return false;
         }
@@ -136,6 +137,8 @@ namespace VRTK
                     return prevButtonState.MenuPressed == false && currentButtonState.MenuPressed == true;
                 case InteractionSourcePressType.Touchpad:
                     return prevButtonState.TouchpadPressed == false && currentButtonState.TouchpadPressed == true;
+                case InteractionSourcePressType.Thumbstick:
+                    return prevButtonState.ThumbstickPressed == false && currentButtonState.ThumbstickPressed == true;
             }
             return false;
         }
@@ -152,6 +155,8 @@ namespace VRTK
                     return prevButtonState.MenuPressed == true && currentButtonState.MenuPressed == false;
                 case InteractionSourcePressType.Touchpad:
                     return prevButtonState.TouchpadPressed == true && currentButtonState.TouchpadPressed == false;
+                case InteractionSourcePressType.Thumbstick:
+                    return prevButtonState.ThumbstickPressed == true && currentButtonState.ThumbstickPressed == false;
             }
             return false;
         }
@@ -190,6 +195,8 @@ namespace VRTK
         {
             switch(button)
             {
+                case InteractionSourcePressType.Select:
+                    return new Vector2(currentButtonState.SelectPressedAmount, 0f);
                 case InteractionSourcePressType.Touchpad:
                     return currentButtonState.TouchpadPosition;
 
@@ -201,18 +208,19 @@ namespace VRTK
 
         public bool GetHairTrigger()
         {
-            //Update();
+            //Update(); //Needed?
             return hairTriggerState;
         }
 
         public bool GetHairTriggerDown()
         {
-            //Update();
+            //Update(); //Needed?
             return hairTriggerState && !hairTriggerPrevState;
         }
+
         public bool GetHairTriggerUp()
         {
-            //Update();
+            //Update(); //Needed?
             return !hairTriggerState && hairTriggerPrevState;
         }
         #endregion
@@ -253,7 +261,7 @@ namespace VRTK
 
             if (source.kind == InteractionSourceKind.Controller && source.handedness == handedness)
             {
-                //UpdateInteractionState(state);
+                //UpdateInteractionState(state); //Handled in Update since it causes problems here
                 UpdatePose(state);
             }
         }
@@ -282,7 +290,7 @@ namespace VRTK
 
             if (source.handedness == handedness && source.id == index)
             {
-                Debug.Log("UpdateInteractionState " + handedness);
+                Debug.Log("UpdateInteractionState " + handedness); // for debugging purposes only
 
                 prevButtonState = currentButtonState;
 
