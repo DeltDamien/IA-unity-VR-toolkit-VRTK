@@ -133,10 +133,10 @@
                     //return IsButtonPressed(index, pressType, (1ul << (int)EVRButtonId.k_EButton_A));
                     return false;
                 case ButtonTypes.ButtonTwo:
+                    return IsButtonPressed(index, pressType, InteractionSourcePressType.Menu);
+                case ButtonTypes.StartMenu:
                     //return IsButtonPressed(index, pressType, InteractionSourcePressType.Menu);
                     return false;
-                case ButtonTypes.StartMenu:
-                    return IsButtonPressed(index, pressType, InteractionSourcePressType.Menu);
             }
             return false;
         }
