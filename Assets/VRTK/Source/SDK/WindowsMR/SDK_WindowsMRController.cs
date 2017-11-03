@@ -1,10 +1,10 @@
 ﻿namespace VRTK
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
     using UnityEngine;
+    using System.Collections.Generic;
+#if VRTK_DEFINE_SDK_WINDOWSMR
     using UnityEngine.XR.WSA.Input;
+#endif
 
     /// <summary>
     /// The WindowsMR Controller SDK script provides a bridge to SDK methods that deal with the input devices.

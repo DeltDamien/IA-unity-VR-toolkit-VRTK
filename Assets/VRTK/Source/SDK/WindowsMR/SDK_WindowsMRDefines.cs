@@ -1,8 +1,5 @@
 ﻿namespace VRTK
 {
-    using System;
-    using UnityEngine.XR;
-
     /// <summary>
     /// Handles all the scripting define symbols for the Windows Immersive Mixed Reality SDK.
     /// </summary>

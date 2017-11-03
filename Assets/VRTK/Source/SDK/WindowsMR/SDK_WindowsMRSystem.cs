@@ -1,9 +1,5 @@
 ﻿namespace VRTK
 {
-#if VRTK_DEFINE_SDK_WINDOWSMR
-    using UnityEngine.XR.WSA;
-#endif
-
     [SDK_Description("WindowsMR", SDK_WindowsMRDefines.ScriptingDefineSymbol, "WindowsMR", "WSA")]
     //[SDK_Description("Unity (Universal Windows Platform:Windows Mixed Reality)", null, "Windows Mixed Reality", "WSA", 6)]
     public class SDK_WindowsMR

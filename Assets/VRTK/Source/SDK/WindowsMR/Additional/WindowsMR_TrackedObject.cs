@@ -1,7 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+#if VRTK_DEFINE_SDK_WINDOWSMR
 using UnityEngine.XR.WSA.Input;
+#endif
 
 namespace VRTK
 {

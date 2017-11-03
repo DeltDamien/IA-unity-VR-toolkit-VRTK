@@ -30,7 +30,6 @@
         {
             if(XRSettings.enabled == false)
             {
-                Debug.Log("XRSettings: " + XRSettings.enabled);
                 Debug.LogError("XRSettings are not enabled. Enable in PlayerSettings. Do not forget to add Windows Mixed Reality to Virtual Reality SDKs.");
                 return false;
             }

@@ -1,12 +1,11 @@
 ﻿namespace VRTK
 {
-    
-#if VRTK_DEFINE_SDK_WINDOWSMR
     using UnityEngine;
     using System.Collections.Generic;
     using UnityEngine.Experimental.XR;
-    using UnityEngine.XR.WSA;
     using UnityEngine.XR;
+#if VRTK_DEFINE_SDK_WINDOWSMR
+    using UnityEngine.XR.WSA;
 #endif
 
     /// <summary>
@@ -67,7 +66,6 @@
         /// <returns>A Vector3 array of the points in the scene that represent the play area boundaries.</returns>
         public override Vector3[] GetPlayAreaVertices()
         {
-            Debug.Log("GetPlayAreaVertices");
             List<Vector3> boundaryGeometry = new List<Vector3>(0);
 
             if (Boundary.TryGetGeometry(boundaryGeometry))
@@ -94,7 +92,6 @@
         /// </summary>
         public override void InitBoundaries()
         {
-            Debug.Log("InitBoundaries");
             if (HolographicSettings.IsDisplayOpaque)
             {
                 // Defaulting coordinate system to RoomScale in immersive headsets.
@@ -111,8 +108,6 @@
             Transform headsetCamera = VRTK_DeviceFinder.HeadsetCamera();
 
             cachedPlayArea = headsetCamera.transform;
-
-            Debug.Log("Camera? " + headsetCamera);
         }
 
         /// <summary>
