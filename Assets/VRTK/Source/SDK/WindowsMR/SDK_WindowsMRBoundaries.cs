@@ -1,7 +1,4 @@
-﻿using System;
-using UnityEngine;
-
-namespace VRTK
+﻿namespace VRTK
 {
     
 #if VRTK_DEFINE_SDK_WINDOWSMR
@@ -13,7 +10,7 @@ namespace VRTK
 #endif
 
     /// <summary>
-    /// The WindowsMR Boundaries SDK script provides a bridge to the Oculus SDK play area.
+    /// The WindowsMR Boundaries SDK script provides a bridge to the Windows Mixed Reality SDK play area.
     /// </summary>
     [SDK_Description(typeof(SDK_WindowsMR))]
     public class SDK_WindowsMRBoundaries
@@ -23,6 +20,7 @@ namespace VRTK
         : SDK_FallbackHeadset
 #endif
     {
+#if VRTK_DEFINE_SDK_WINDOWSMR
         /// <summary>
         /// The GetDrawAtRuntime method returns whether the given play area drawn border is being displayed.
         /// </summary>
@@ -135,5 +133,6 @@ namespace VRTK
         {
             // TODO: Implement
         }
+#endif
     }
 }

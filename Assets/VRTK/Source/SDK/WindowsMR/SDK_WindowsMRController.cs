@@ -17,13 +17,14 @@
         : SDK_FallbackController
 #endif
     {
+#if VRTK_DEFINE_SDK_WINDOWSMR
         protected WindowsMR_TrackedObject cachedLeftTrackedObject;
         protected WindowsMR_TrackedObject cachedRightTrackedObject;
 
         protected Dictionary<GameObject, WindowsMR_TrackedObject> cachedTrackedObjectsByGameObject = new Dictionary<GameObject, WindowsMR_TrackedObject>();
         protected Dictionary<uint, WindowsMR_TrackedObject> cachedTrackedObjectsByIndex = new Dictionary<uint, WindowsMR_TrackedObject>();
 
-        #region Overriden base functions
+#region Overriden base functions
         /// <summary>
         /// The GenerateControllerPointerOrigin method can create a custom pointer origin Transform to represent the pointer position and forward.
         /// </summary>
@@ -79,6 +80,18 @@
             }
 
             return Vector2.zero;
+        }
+
+        /// <summary>
+        /// The GetButtonSenseAxis method retrieves the current sense axis value for the given button type on the given controller reference.
+        /// </summary>
+        /// <param name="buttonType">The type of button to check for the sense axis on.</param>
+        /// <param name="controllerReference">The reference to the controller to check the sense axis on.</param>
+        /// <returns>The current sense axis value.</returns>
+        public override float GetButtonSenseAxis(ButtonTypes buttonType, VRTK_ControllerReference controllerReference)
+        {
+            // TODO: Implement
+            return 0f;
         }
 
         /// <summary>
@@ -304,7 +317,7 @@
         /// The GetCurrentControllerType method returns the current used ControllerType based on the SDK and headset being used.
         /// </summary>
         /// <returns>The ControllerType based on the SDK and headset being used.</returns>
-        public override ControllerType GetCurrentControllerType()
+        public override ControllerType GetCurrentControllerType(VRTK_ControllerReference controllerReference = null)
         {
             // TODO: Implement
             return ControllerType.WindowsMR_MotionController;
@@ -438,6 +451,17 @@
             // TODO: Implement
         }
 
+        /// <summary>
+        /// The WaitForControllerModel method determines whether the controller model for the given hand requires waiting to load in on scene start.
+        /// </summary>
+        /// <param name="hand">The hand to determine if the controller model will be ready for.</param>
+        /// <returns>Returns true if the controller model requires loading in at runtime and therefore needs waiting for. Returns false if the controller model will be available at start.</returns>
+        public override bool WaitForControllerModel(ControllerHand hand)
+        {
+            // TODO: Implement
+            return false;
+        }
+
         #endregion
 
         protected virtual WindowsMR_TrackedObject GetTrackedObject(GameObject controller)
@@ -521,5 +545,6 @@
 
             return false;
         }
+#endif
     }
 }

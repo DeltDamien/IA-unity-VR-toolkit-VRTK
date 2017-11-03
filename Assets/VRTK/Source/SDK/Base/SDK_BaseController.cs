@@ -67,7 +67,11 @@ namespace VRTK
             /// <summary>
             /// Pinky Finger on the controller.
             /// </summary>
-            PinkyFinger
+            PinkyFinger,
+            /// <summary>
+            /// Thumbstick on the controller.
+            /// </summary>
+            Thumbstick
         }
 
         /// <summary>
@@ -223,7 +227,11 @@ namespace VRTK
             /// <summary>
             /// The Oculus GearVR controller for Oculus Utilities.
             /// </summary>
-            Oculus_GearVRController
+            Oculus_GearVRController,
+            /// <summary>
+            /// The Windows Mixed Reality controller for Windows MR.
+            /// </summary>
+            WindowsMR_MotionController
         }
 
         public event VRTKSDKBaseControllerEventHandler LeftControllerReady;
