@@ -90,19 +90,29 @@
         private void Start()
         {
             Debug.Log("Start controller " + handedness);
+
             InteractionManager.InteractionSourceDetected += InteractionManager_InteractionSourceDetected;
-            // InteractionManager.InteractionSourceUpdated updates too often and messes up Down and Up.
-            // Only used for controller position. Might be better in future releases.
-            InteractionManager.InteractionSourceUpdated += InteractionManager_InteractionSourceUpdated;
             InteractionManager.InteractionSourceLost += InteractionManager_InteractionSourceLost;
+            InteractionManager.InteractionSourceUpdated += InteractionManager_InteractionSourceUpdated;
+            InteractionManager.InteractionSourcePressed += InteractionManager_InteractionSourcePressed;
+            InteractionManager.InteractionSourceReleased += InteractionManager_InteractionSourceReleased;
         }
 
         private void Update()
         {
             if (isDetected)
             {
-                UpdateStates();
-                UpdateHairTrigger();
+                InteractionSourceState[] states = InteractionManager.GetCurrentReading();
+
+                foreach (InteractionSourceState state in states)
+                {
+                    if (state.source.kind == InteractionSourceKind.Controller && state.source.handedness == handedness)
+                    {
+                        // Necessary to update Select Button in Update Loop since it causes issues in Pressed and in Update event
+                        // Will be changed in a future iteration
+                        UpdateSelectButton(state);
+                    }
+                }
             }
         }
 
@@ -261,64 +271,78 @@
 
             if (source.kind == InteractionSourceKind.Controller && source.handedness == handedness)
             {
-                //UpdateInteractionState(state); //Handled in Update since it causes problems here
+                UpdateAxis(state);
                 UpdatePose(state);
+            }
+        }
+
+        private void InteractionManager_InteractionSourcePressed(InteractionSourcePressedEventArgs args)
+        {
+            InteractionSourceState state = args.state;
+            InteractionSource source = state.source;
+
+            if (source.kind == InteractionSourceKind.Controller && source.handedness == handedness)
+            {
+                UpdateButtonState(args.pressType, state, true);
+            }
+        }
+
+        private void InteractionManager_InteractionSourceReleased(InteractionSourceReleasedEventArgs args)
+        {
+            InteractionSourceState state = args.state;
+            InteractionSource source = state.source;
+
+            if (source.kind == InteractionSourceKind.Controller && source.handedness == handedness)
+            {
+                UpdateButtonState(args.pressType, state, false);
             }
         }
         #endregion
 
         #region Update functions
-        private void UpdateStates()
-        {
-            InteractionSourceState[] states = InteractionManager.GetCurrentReading();
-
-            foreach(InteractionSourceState state in states)
-            {
-                UpdateInteractionState(state);
-            }
-        }
-
         private void UpdatePose(InteractionSourceState state)
         {
             UpdateAngularVelocity(state.sourcePose);
             UpdateControllerPose(state.sourcePose);
         }
 
-        private void UpdateInteractionState(InteractionSourceState state)
+        // Workaround for Select Button
+        // Issue: Pressed and Released event only recognize Select once and Select is pressed when selectPressedAmount==1,
+        // so on press Select State is not always true and therefore not 'pressed'.
+        // Updating SelectPressed in UpdateEvent of WSA.XR causes issues because the event and Unity Update are not synched
+        // and therefore VRTK's polling of GetPressDown and GetPressUp might already been overwritten.
+        private void UpdateSelectButton(InteractionSourceState state)
         {
-            InteractionSource source = state.source;
+            prevButtonState.SelectPressed = currentButtonState.SelectPressed;
+            currentButtonState.SelectPressed = state.selectPressed;
+        }
 
-            if (source.handedness == handedness && source.id == index)
+        private void UpdateButtonState(InteractionSourcePressType button, InteractionSourceState state, bool pressed)
+        {
+            switch (button)
             {
-                Debug.Log("UpdateInteractionState " + handedness); // for debugging purposes only
-
-                prevButtonState = currentButtonState;
-
-                currentButtonState.SelectPressed = state.selectPressed;
-                currentButtonState.SelectPressedAmount = state.selectPressedAmount;
-
-                if (source.supportsGrasp)
-                {
+                /*
+                case InteractionSourcePressType.Select:
+                    prevButtonState.SelectPressed = currentButtonState.SelectPressed;
+                    currentButtonState.SelectPressed = state.selectPressed;
+                    break;
+                */
+                case InteractionSourcePressType.Grasp:
+                    prevButtonState.Grasped = currentButtonState.Grasped;
                     currentButtonState.Grasped = state.grasped;
-                }
-
-                if (source.supportsMenu)
-                {
+                    break;
+                case InteractionSourcePressType.Menu:
+                    prevButtonState.MenuPressed = currentButtonState.MenuPressed;
                     currentButtonState.MenuPressed = state.menuPressed;
-                }
-
-                if (source.supportsThumbstick)
-                {
-                    currentButtonState.ThumbstickPosition = state.thumbstickPosition;
-                    currentButtonState.ThumbstickPressed = state.thumbstickPressed;
-                }
-
-                if (source.supportsTouchpad)
-                {
-                    currentButtonState.TouchpadPosition = state.touchpadPosition;
+                    break;
+                case InteractionSourcePressType.Touchpad:
+                    prevButtonState.TouchpadPressed = currentButtonState.TouchpadPressed;
                     currentButtonState.TouchpadPressed = state.touchpadPressed;
-                    currentButtonState.TouchpadTouched = state.touchpadTouched;
-                }
+                    break;
+                case InteractionSourcePressType.Thumbstick:
+                    prevButtonState.ThumbstickPressed = currentButtonState.ThumbstickPressed;
+                    currentButtonState.ThumbstickPressed = state.thumbstickPressed;
+                    break;
             }
         }
 
@@ -334,6 +358,27 @@
             if (pose.TryGetPosition(out newPosition, InteractionSourceNode.Grip))
             {
                 transform.localPosition = newPosition;
+            }
+        }
+
+        private void UpdateAxis(InteractionSourceState state)
+        {
+            InteractionSource source = state.source;
+
+            prevButtonState.SelectPressedAmount = currentButtonState.SelectPressedAmount;
+            currentButtonState.SelectPressedAmount = state.selectPressedAmount;
+
+            UpdateHairTrigger();
+
+            if (source.supportsTouchpad)
+            {
+                currentButtonState.TouchpadPosition = state.touchpadPosition;
+                currentButtonState.TouchpadTouched = state.touchpadTouched;
+            }
+
+            if (source.supportsThumbstick)
+            {
+                currentButtonState.ThumbstickPosition = state.thumbstickPosition;
             }
         }
 
