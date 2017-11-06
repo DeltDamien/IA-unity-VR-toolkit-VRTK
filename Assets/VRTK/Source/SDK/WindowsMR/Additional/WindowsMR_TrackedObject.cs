@@ -1,13 +1,13 @@
-﻿using UnityEngine;
+﻿namespace VRTK
+{
+    using UnityEngine;
 #if VRTK_DEFINE_SDK_WINDOWSMR
-using UnityEngine.XR.WSA.Input;
+    using UnityEngine.XR.WSA.Input;
 #endif
 
-namespace VRTK
-{
     public class WindowsMR_TrackedObject : MonoBehaviour
     {
-
+#if VRTK_DEFINE_SDK_WINDOWSMR
         private struct ButtonState
         {
             //
@@ -366,4 +366,5 @@ namespace VRTK
         }
         #endregion
     }
+#endif
 }
