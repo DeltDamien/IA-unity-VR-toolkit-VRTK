@@ -365,6 +365,6 @@
             hairTriggerLimit = hairTriggerState ? Mathf.Max(hairTriggerLimit, value) : Mathf.Min(hairTriggerLimit, value);
         }
         #endregion
-    }
 #endif
+    }
 }
