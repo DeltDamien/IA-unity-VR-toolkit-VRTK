@@ -16,7 +16,7 @@
 #if VRTK_DEFINE_SDK_WINDOWSMR
         : SDK_BaseBoundaries
 #else
-        : SDK_FallbackHeadset
+        : SDK_FallbackBoundaries
 #endif
     {
 #if VRTK_DEFINE_SDK_WINDOWSMR
