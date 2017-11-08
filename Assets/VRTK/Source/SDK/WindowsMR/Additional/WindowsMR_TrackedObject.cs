@@ -71,7 +71,7 @@
         [SerializeField]
         private InteractionSourceHandedness handedness;
 
-        private uint index;
+        private uint index = uint.MaxValue;
         public uint Index { get { return index; } }
 
         private ButtonState currentButtonState;
@@ -90,6 +90,20 @@
         private void Start()
         {
             Debug.Log("Start controller " + handedness);
+            switch (handedness)
+            {
+                case InteractionSourceHandedness.Left:
+                    index = 1;
+                    break;
+
+                case InteractionSourceHandedness.Right:
+                    index = 2;
+                    break;
+
+                case InteractionSourceHandedness.Unknown:
+                    Debug.LogWarning("Handedness of " + gameObject.name + " is not set.");
+                    break;
+            }
 
             InteractionManager.InteractionSourceDetected += InteractionManager_InteractionSourceDetected;
             InteractionManager.InteractionSourceLost += InteractionManager_InteractionSourceLost;
