@@ -63,6 +63,11 @@
         {
             uint index = VRTK_ControllerReference.GetRealIndex(controllerReference);
 
+            if (GetControllerByIndex(index, true) == null)
+            {
+                return Vector2.zero;
+            }
+
             WindowsMR_TrackedObject device = GetControllerByIndex(index, true).GetComponent<WindowsMR_TrackedObject>();
 
             switch (buttonType)
@@ -70,10 +75,6 @@
                 case ButtonTypes.Trigger:
                     return device.GetAxis(InteractionSourcePressType.Select);
                 case ButtonTypes.Touchpad:
-                    if(device.GetAxis(InteractionSourcePressType.Touchpad) == Vector2.zero)
-                    {
-                        return device.GetAxis(InteractionSourcePressType.Thumbstick);
-                    }
                     return device.GetAxis(InteractionSourcePressType.Touchpad);
                 case ButtonTypes.Thumbstick:
                     return device.GetAxis(InteractionSourcePressType.Thumbstick);

@@ -69,7 +69,12 @@
         }
 
         [SerializeField]
+        [Tooltip ("Defines the controllers hand.")]
         private InteractionSourceHandedness handedness;
+
+        [SerializeField]
+        [Tooltip("If checked the functionality of the Touchpad is mapped onto the Thumbstick of the controller.")]
+        private bool useThumbstickAsTouchpad;
 
         private uint index = uint.MaxValue;
         public uint Index { get { return index; } }
@@ -142,6 +147,10 @@
                 case InteractionSourcePressType.Menu:
                     return currentButtonState.MenuPressed;
                 case InteractionSourcePressType.Touchpad:
+                    if (useThumbstickAsTouchpad)
+                    {
+                        return GetPress(InteractionSourcePressType.Thumbstick);
+                    }
                     return currentButtonState.TouchpadPressed;
                 case InteractionSourcePressType.Thumbstick:
                     return currentButtonState.ThumbstickPressed;
@@ -160,6 +169,10 @@
                 case InteractionSourcePressType.Menu:
                     return prevButtonState.MenuPressed == false && currentButtonState.MenuPressed == true;
                 case InteractionSourcePressType.Touchpad:
+                    if (useThumbstickAsTouchpad)
+                    {
+                        return GetPressDown(InteractionSourcePressType.Thumbstick);
+                    }
                     return prevButtonState.TouchpadPressed == false && currentButtonState.TouchpadPressed == true;
                 case InteractionSourcePressType.Thumbstick:
                     return prevButtonState.ThumbstickPressed == false && currentButtonState.ThumbstickPressed == true;
@@ -178,6 +191,10 @@
                 case InteractionSourcePressType.Menu:
                     return prevButtonState.MenuPressed == true && currentButtonState.MenuPressed == false;
                 case InteractionSourcePressType.Touchpad:
+                    if (useThumbstickAsTouchpad)
+                    {
+                        return GetPressUp(InteractionSourcePressType.Thumbstick);
+                    }
                     return prevButtonState.TouchpadPressed == true && currentButtonState.TouchpadPressed == false;
                 case InteractionSourcePressType.Thumbstick:
                     return prevButtonState.ThumbstickPressed == true && currentButtonState.ThumbstickPressed == false;
@@ -222,8 +239,11 @@
                 case InteractionSourcePressType.Select:
                     return new Vector2(currentButtonState.SelectPressedAmount, 0f);
                 case InteractionSourcePressType.Touchpad:
+                    if (useThumbstickAsTouchpad)
+                    {
+                        return GetAxis(InteractionSourcePressType.Thumbstick);
+                    }
                     return currentButtonState.TouchpadPosition;
-
                 case InteractionSourcePressType.Thumbstick:
                     return currentButtonState.ThumbstickPosition;
             }
