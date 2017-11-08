@@ -75,6 +75,7 @@
         [SerializeField]
         [Tooltip("If checked the functionality of the Touchpad is mapped onto the Thumbstick of the controller.")]
         private bool useThumbstickAsTouchpad;
+        public bool UseThumbstickAsTouchpad { get { return useThumbstickAsTouchpad; } set { useThumbstickAsTouchpad = value; } }
 
         private uint index = uint.MaxValue;
         public uint Index { get { return index; } }
