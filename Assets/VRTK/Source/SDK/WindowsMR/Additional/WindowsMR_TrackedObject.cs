@@ -260,7 +260,7 @@
                 index = source.id;
                 currentButtonState = new ButtonState();
                 isDetected = true;
-                Debug.Log("New controller detected " + source.handedness);
+                Debug.Log("New controller detected: " + source.handedness);
             }
         }
 
@@ -274,7 +274,7 @@
                 index = uint.MaxValue;
                 currentButtonState = new ButtonState();
                 isDetected = false;
-                Debug.Log("Controller lost " + source.handedness);
+                Debug.Log("Controller lost: " + source.handedness);
             }
         }
 

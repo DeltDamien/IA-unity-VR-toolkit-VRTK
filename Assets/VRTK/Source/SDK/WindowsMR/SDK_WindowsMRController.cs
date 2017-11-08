@@ -147,6 +147,8 @@
                     return false;
                 case ButtonTypes.ButtonTwo:
                     return IsButtonPressed(index, pressType, InteractionSourcePressType.Menu);
+                case ButtonTypes.Thumbstick:
+                    return IsButtonPressed(index, pressType, InteractionSourcePressType.Thumbstick);
                 case ButtonTypes.StartMenu:
                     //return IsButtonPressed(index, pressType, InteractionSourcePressType.Menu);
                     return false;
