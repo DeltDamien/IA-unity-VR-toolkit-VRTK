@@ -1,5 +1,6 @@
 ﻿namespace VRTK
 {
+    using System.Collections;
     using UnityEngine;
 #if VRTK_DEFINE_SDK_WINDOWSMR
     using UnityEngine.XR.WSA.Input;
@@ -128,8 +129,8 @@
                 {
                     if (state.source.kind == InteractionSourceKind.Controller && state.source.handedness == handedness)
                     {
-                        // Necessary to update Select Button in Update Loop since it causes issues in Pressed and in Update event
-                        // Will be changed in a future iteration
+                        // Necessary to update Select Button State in Update Loop since it causes issues with PressDown and PressUp
+                        // Will be changed in a future iteration (probably VRTK 4)
                         UpdateSelectButton(state);
                     }
                 }
@@ -318,7 +319,7 @@
 
             if (source.kind == InteractionSourceKind.Controller && source.handedness == handedness)
             {
-                UpdateButtonState(args.pressType, state, true);
+                UpdateButtonState(args.pressType, state);
             }
         }
 
@@ -329,7 +330,7 @@
 
             if (source.kind == InteractionSourceKind.Controller && source.handedness == handedness)
             {
-                UpdateButtonState(args.pressType, state, false);
+                UpdateButtonState(args.pressType, state);
             }
         }
         #endregion
@@ -352,7 +353,7 @@
             currentButtonState.SelectPressed = state.selectPressed;
         }
 
-        private void UpdateButtonState(InteractionSourcePressType button, InteractionSourceState state, bool pressed)
+        private void UpdateButtonState(InteractionSourcePressType button, InteractionSourceState state)
         {
             switch (button)
             {
@@ -377,6 +378,34 @@
                 case InteractionSourcePressType.Thumbstick:
                     prevButtonState.ThumbstickPressed = currentButtonState.ThumbstickPressed;
                     currentButtonState.ThumbstickPressed = state.thumbstickPressed;
+                    break;
+            }
+
+            StartCoroutine(UpdateButtonStateAfterNextFrame(button));
+        }
+
+        private IEnumerator UpdateButtonStateAfterNextFrame(InteractionSourcePressType button)
+        {
+            yield return new WaitForEndOfFrame();
+
+            switch (button)
+            {
+                /*
+                case InteractionSourcePressType.Select:
+                    prevButtonState.SelectPressed = currentButtonState.SelectPressed;
+                    break;
+                */
+                case InteractionSourcePressType.Grasp:
+                    prevButtonState.Grasped = currentButtonState.Grasped;
+                    break;
+                case InteractionSourcePressType.Menu:
+                    prevButtonState.MenuPressed = currentButtonState.MenuPressed;
+                    break;
+                case InteractionSourcePressType.Touchpad:
+                    prevButtonState.TouchpadPressed = currentButtonState.TouchpadPressed;
+                    break;
+                case InteractionSourcePressType.Thumbstick:
+                    prevButtonState.ThumbstickPressed = currentButtonState.ThumbstickPressed;
                     break;
             }
         }
