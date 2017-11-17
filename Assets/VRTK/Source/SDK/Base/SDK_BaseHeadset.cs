@@ -81,7 +81,11 @@ namespace VRTK
             /// <summary>
             /// A summary of all Google Daydream headset versions.
             /// </summary>
-            Daydream
+            Daydream,
+            /// <summary>
+            /// A specific version of the Windows Mixed Reality Headset from Manufacturer Acer
+            /// </summary>
+            AcerAH100
         }
 
         protected Transform cachedHeadset;

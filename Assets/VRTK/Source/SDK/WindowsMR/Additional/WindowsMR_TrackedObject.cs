@@ -135,6 +135,7 @@
                         // Necessary to update Select Button State in Update Loop since it causes issues with PressDown and PressUp
                         // Will be changed in a future iteration (probably VRTK 4)
                         UpdateSelectButton(state);
+                        UpdateTouchpadTouch(state);
                     }
                 }
             }
@@ -372,6 +373,15 @@
             currentButtonState.SelectPressed = state.selectPressed;
         }
 
+        private void UpdateTouchpadTouch(InteractionSourceState state)
+        {
+            if (state.source.supportsTouchpad)
+            {
+                prevButtonState.TouchpadTouched = currentButtonState.TouchpadTouched;
+                currentButtonState.TouchpadTouched = state.touchpadTouched;
+            }
+        }
+
         private void UpdateButtonState(InteractionSourcePressType button, InteractionSourceState state)
         {
             switch (button)
@@ -456,7 +466,6 @@
             if (source.supportsTouchpad)
             {
                 currentButtonState.TouchpadPosition = state.touchpadPosition;
-                currentButtonState.TouchpadTouched = state.touchpadTouched;
             }
 
             if (source.supportsThumbstick)
