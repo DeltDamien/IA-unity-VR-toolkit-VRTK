@@ -142,6 +142,7 @@
                 case ButtonTypes.Grip:
                     return IsButtonPressed(index, pressType, InteractionSourcePressType.Grasp);
                 case ButtonTypes.Touchpad:
+                    //Debug.Log("*** Tochpad : "+ pressType + " " + IsButtonPressed(index, pressType, InteractionSourcePressType.Touchpad));
                     return IsButtonPressed(index, pressType, InteractionSourcePressType.Touchpad);
                 case ButtonTypes.ButtonOne:
                     //return IsButtonPressed(index, pressType, (1ul << (int)EVRButtonId.k_EButton_A));

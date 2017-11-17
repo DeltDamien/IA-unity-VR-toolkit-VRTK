@@ -6,6 +6,7 @@
     using UnityEngine.XR.WSA.Input;
 #endif
 
+    [RequireComponent (typeof(WindowsMR_ControllerVisualizer))]
     public class WindowsMR_TrackedObject : MonoBehaviour
     {
 #if VRTK_DEFINE_SDK_WINDOWSMR
@@ -94,6 +95,8 @@
 
         private bool isDetected;
 
+        private bool isVisualized;
+
         private void Start()
         {
             Debug.Log("Start controller " + handedness);
@@ -138,6 +141,16 @@
         }
 
         #region Getter functions
+        public float GetPressAmount(InteractionSourcePressType button)
+        {
+            switch (button)
+            {
+                case InteractionSourcePressType.Select:
+                    return currentButtonState.SelectPressedAmount;
+            }
+            return 0;
+         }
+
         public bool GetPress(InteractionSourcePressType button)
         {
             switch(button)
@@ -281,7 +294,13 @@
             {
                 index = source.id;
                 currentButtonState = new ButtonState();
+                prevButtonState = new ButtonState();
                 isDetected = true;
+                if (!isVisualized)
+                {
+                    GetComponent<WindowsMR_ControllerVisualizer>().LoadControllerModel(source, this);
+                    isVisualized = true;
+                }
                 Debug.Log("New controller detected: " + source.handedness);
             }
         }
