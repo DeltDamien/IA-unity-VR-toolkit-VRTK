@@ -12,13 +12,14 @@
     using GLTF;
     using System.Collections;
     using UnityEngine.XR.WSA.Input;
+    using HoloToolkit.Unity;
 
 #if !UNITY_EDITOR
 using Windows.Foundation;
 using Windows.Storage.Streams;
 #endif
 #endif
-    
+
     public class WindowsMR_ControllerVisualizer : MonoBehaviour
     {
 #if VRTK_DEFINE_SDK_WINDOWSMR
@@ -113,7 +114,7 @@ using Windows.Storage.Streams;
                 yield break;
             }
 
-#if !UNITY_EDITOR
+#if !UNITY_EDITOR 
             // This API returns the appropriate glTF file according to the motion controller you're currently using, if supported.
             IAsyncOperation<IRandomAccessStreamWithContentType> modelTask = source.TryGetRenderableModelAsync();
 
@@ -230,7 +231,7 @@ using Windows.Storage.Streams;
         {
             if (animateControllerModel && controllerInfo != null)
             {
-                Debug.Log("UpdateControllerButtonState");
+                //Debug.Log("UpdateControllerButtonState");
                 controllerInfo.AnimateSelect(trackedObject.GetPressAmount(InteractionSourcePressType.Select));
 
                 controllerInfo.AnimateGrasp(trackedObject.GetPress(InteractionSourcePressType.Grasp));

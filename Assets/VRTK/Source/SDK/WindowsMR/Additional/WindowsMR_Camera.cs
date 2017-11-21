@@ -14,7 +14,7 @@
         /// </summary>
         private const string DEVICE_NAME = "WindowsMR";
         
-        void Start()
+        void Awake()
         {
             if (CheckForMixedRealitySupport())
             {
