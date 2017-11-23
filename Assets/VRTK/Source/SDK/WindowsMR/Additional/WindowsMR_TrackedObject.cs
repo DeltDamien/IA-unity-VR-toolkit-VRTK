@@ -4,6 +4,7 @@
     using UnityEngine;
 #if VRTK_DEFINE_SDK_WINDOWSMR
     using UnityEngine.XR.WSA.Input;
+    using HoloToolkit.Unity; 
 #endif
 
     [RequireComponent (typeof(WindowsMR_ControllerVisualizer))]
@@ -115,11 +116,7 @@
                     break;
             }
 
-            InteractionManager.InteractionSourceDetected += InteractionManager_InteractionSourceDetected;
-            InteractionManager.InteractionSourceLost += InteractionManager_InteractionSourceLost;
-            InteractionManager.InteractionSourceUpdated += InteractionManager_InteractionSourceUpdated;
-            InteractionManager.InteractionSourcePressed += InteractionManager_InteractionSourcePressed;
-            InteractionManager.InteractionSourceReleased += InteractionManager_InteractionSourceReleased;
+            InitController();
         }
 
         private void Update()
@@ -139,6 +136,39 @@
                     }
                 }
             }
+
+            if (GetPress(InteractionSourcePressType.Grasp))
+            {
+                StartHaptics(1f, 0.1f);
+            }
+        }
+
+        private void InitController()
+        {
+            InteractionManager.InteractionSourceDetected += InteractionManager_InteractionSourceDetected;
+            InteractionManager.InteractionSourceLost += InteractionManager_InteractionSourceLost;
+            InteractionManager.InteractionSourceUpdated += InteractionManager_InteractionSourceUpdated;
+            InteractionManager.InteractionSourcePressed += InteractionManager_InteractionSourcePressed;
+            InteractionManager.InteractionSourceReleased += InteractionManager_InteractionSourceReleased;
+        }
+
+        private void SetupController(InteractionSource source)
+        {
+            index = source.id;
+            currentButtonState = new ButtonState();
+            prevButtonState = new ButtonState();
+            isDetected = true;
+
+            if (!isVisualized)
+            {
+                WindowsMR_ControllerVisualizer visualizer = GetComponent<WindowsMR_ControllerVisualizer>();
+                if (visualizer != null && visualizer.enabled)
+                {
+                    visualizer.LoadControllerModel(source, this);
+                }
+                isVisualized = true;
+            }
+            Debug.Log("New controller detected: " + source.handedness);
         }
 
         #region Getter functions
@@ -293,16 +323,7 @@
 
             if (source.kind == InteractionSourceKind.Controller && source.handedness == handedness)
             {
-                index = source.id;
-                currentButtonState = new ButtonState();
-                prevButtonState = new ButtonState();
-                isDetected = true;
-                if (!isVisualized)
-                {
-                    GetComponent<WindowsMR_ControllerVisualizer>().LoadControllerModel(source, this);
-                    isVisualized = true;
-                }
-                Debug.Log("New controller detected: " + source.handedness);
+                SetupController(source);
             }
         }
 
@@ -502,6 +523,30 @@
             hairTriggerLimit = hairTriggerState ? Mathf.Max(hairTriggerLimit, value) : Mathf.Min(hairTriggerLimit, value);
         }
         #endregion
+
+        public void StartHaptics(float intensity = 0.5f, float duration = 0.25f)
+        {
+            InteractionSourceState[] states = InteractionManager.GetCurrentReading();
+
+            foreach (InteractionSourceState state in states)
+            {
+                if (state.source.kind == InteractionSourceKind.Controller && state.source.handedness == handedness)
+                {
+                    Debug.Log("Start Vibrating " + handedness);
+                    state.source.StartHaptics(intensity, duration);
+                }
+            }
+        }
+
+        public void OnDestroy()
+        {
+            InteractionManager.InteractionSourceDetected -= InteractionManager_InteractionSourceDetected;
+            InteractionManager.InteractionSourceLost -= InteractionManager_InteractionSourceLost;
+            InteractionManager.InteractionSourceUpdated -= InteractionManager_InteractionSourceUpdated;
+            InteractionManager.InteractionSourcePressed -= InteractionManager_InteractionSourcePressed;
+            InteractionManager.InteractionSourceReleased -= InteractionManager_InteractionSourceReleased;
+        }
+
 #endif
     }
 }
