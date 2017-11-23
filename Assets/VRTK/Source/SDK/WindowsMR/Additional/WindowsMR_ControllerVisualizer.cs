@@ -24,6 +24,7 @@ using Windows.Storage.Streams;
     {
 #if VRTK_DEFINE_SDK_WINDOWSMR
 
+        [Tooltip("This setting will be used to determine if the model should be animated.")]
         [SerializeField]
         private bool animateControllerModel = true;
 
@@ -46,13 +47,6 @@ using Windows.Storage.Streams;
         private WindowsMR_TrackedObject trackedObject;
 
         private WindowsMR_ControllerInfo controllerInfo;
-
-        /*
-        [Tooltip("This setting will be used to determine if the model should always be the left alternate. If false, the platform controller models will be prefered, only if they can't be loaded will the alternate be used. Otherwise, it will always use the alternate model.")]
-        public bool AlwaysUseAlternateLeftModel = false;
-        [Tooltip("This setting will be used to determine if the model should always be the right alternate. If false, the platform controller models will be prefered, only if they can't be loaded will the alternate be used. Otherwise, it will always use the alternate model.")]
-        public bool AlwaysUseAlternateRightModel = false;
-        */
 
 #if UNITY_EDITOR_WIN
         [DllImport("MotionControllerModel")]
@@ -231,7 +225,6 @@ using Windows.Storage.Streams;
         {
             if (animateControllerModel && controllerInfo != null)
             {
-                //Debug.Log("UpdateControllerButtonState");
                 controllerInfo.AnimateSelect(trackedObject.GetPressAmount(InteractionSourcePressType.Select));
 
                 controllerInfo.AnimateGrasp(trackedObject.GetPress(InteractionSourcePressType.Grasp));
