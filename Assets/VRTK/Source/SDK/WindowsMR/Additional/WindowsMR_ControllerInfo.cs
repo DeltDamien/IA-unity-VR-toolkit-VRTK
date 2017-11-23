@@ -11,6 +11,7 @@ namespace VRTK
     /// </summary>
     public class WindowsMR_ControllerInfo
     {
+#if VRTK_DEFINE_SDK_WINDOWSMR
         public GameObject ControllerParent;
 
         private GameObject home;
@@ -289,5 +290,6 @@ namespace VRTK
             buttonGameObject.transform.localPosition = newTransform.localPosition;
             buttonGameObject.transform.localRotation = newTransform.localRotation;
         }
+#endif
     }
 }
