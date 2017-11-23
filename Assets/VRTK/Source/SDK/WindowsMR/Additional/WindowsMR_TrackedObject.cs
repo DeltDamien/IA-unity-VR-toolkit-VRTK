@@ -136,11 +136,6 @@
                     }
                 }
             }
-
-            if (GetPress(InteractionSourcePressType.Grasp))
-            {
-                StartHaptics(1f, 0.1f);
-            }
         }
 
         private void InitController()
