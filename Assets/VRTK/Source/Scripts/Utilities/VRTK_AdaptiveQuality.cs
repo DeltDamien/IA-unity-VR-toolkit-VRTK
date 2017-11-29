@@ -376,6 +376,7 @@ namespace VRTK
 
         private void HandleCommandLineArguments()
         {
+#if !UNITY_WSA
             if (!allowCommandLineArguments)
             {
                 return;
@@ -417,6 +418,7 @@ namespace VRTK
                         break;
                 }
             }
+#endif
         }
 
         private void HandleKeyPresses()
@@ -452,7 +454,7 @@ namespace VRTK
             }
         }
 
-        #region Render scale methods
+#region Render scale methods
 
         private void UpdateRenderScaleLevels()
         {
@@ -669,9 +671,9 @@ namespace VRTK
             return Mathf.Clamp(renderScaleLevel, 0, allRenderScales.Count - 1);
         }
 
-        #endregion
+#endregion
 
-        #region Debug visualization methods
+#region Debug visualization methods
 
         private void CreateOrDestroyDebugVisualization()
         {
@@ -741,9 +743,9 @@ namespace VRTK
             debugVisualizationQuadMaterial.SetInt(ShaderPropertyIDs.LastFrameIsInBudget, lastFrameIsInBudget);
         }
 
-        #endregion
+#endregion
 
-        #region Private helper classes
+#region Private helper classes
 
         private sealed class AdaptiveSetting<T>
         {
@@ -899,7 +901,7 @@ namespace VRTK
             }
         }
 
-        #endregion
+#endregion
     }
 }
 #endif

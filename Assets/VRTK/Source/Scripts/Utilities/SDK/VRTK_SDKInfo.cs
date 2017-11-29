@@ -4,6 +4,7 @@ namespace VRTK
     using UnityEngine;
     using System;
     using System.Collections.Generic;
+    using System.Reflection;
 
     /// <summary>
     /// Holds all the info necessary to describe an SDK.
@@ -94,13 +95,23 @@ namespace VRTK
         {
             if (baseType == null || fallbackType == null)
                 return;
+
+
+#if UNITY_WSA && !UNITY_EDITOR
+            if(!baseType.GetTypeInfo().IsSubclassOf(typeof(SDK_Base)))
+#else
             if (!baseType.IsSubclassOf(typeof(SDK_Base)))
+#endif
             {
                 VRTK_Logger.Fatal(new ArgumentOutOfRangeException("baseType", baseType, string.Format("'{0}' is not a subclass of the SDK base type '{1}'.", baseType.Name, typeof(SDK_Base).Name)));
                 return;
             }
 
+#if UNITY_WSA && !UNITY_EDITOR
+            if (!fallbackType.GetTypeInfo().IsSubclassOf(baseType))
+#else
             if (!fallbackType.IsSubclassOf(baseType))
+#endif
             {
                 VRTK_Logger.Fatal(new ArgumentOutOfRangeException("fallbackType", fallbackType, string.Format("'{0}' is not a subclass of the SDK base type '{1}'.", fallbackType.Name, baseType.Name)));
                 return;
@@ -133,7 +144,11 @@ namespace VRTK
                 return;
             }
 
+#if UNITY_WSA && !UNITY_EDITOR
+            if (!actualType.GetTypeInfo().IsSubclassOf(baseType))
+#else
             if (!actualType.IsSubclassOf(baseType))
+#endif
             {
                 VRTK_Logger.Fatal(new ArgumentOutOfRangeException("actualTypeName", actualTypeName, string.Format("'{0}' is not a subclass of the SDK base type '{1}'.", actualTypeName, baseType.Name)));
                 return;
@@ -152,7 +167,7 @@ namespace VRTK
             description = descriptions[descriptionIndex];
         }
 
-        #region ISerializationCallbackReceiver
+#region ISerializationCallbackReceiver
 
         public void OnBeforeSerialize()
         {
@@ -163,9 +178,9 @@ namespace VRTK
             SetUp(Type.GetType(baseTypeName), Type.GetType(fallbackTypeName), typeName, descriptionIndex);
         }
 
-        #endregion
+#endregion
 
-        #region Equality via type and descriptionIndex
+#region Equality via type and descriptionIndex
 
         public override bool Equals(object obj)
         {
@@ -208,6 +223,6 @@ namespace VRTK
             return !(x == y);
         }
 
-        #endregion
+#endregion
     }
 }
