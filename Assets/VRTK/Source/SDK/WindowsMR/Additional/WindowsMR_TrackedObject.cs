@@ -343,6 +343,11 @@
 
             if (source.kind == InteractionSourceKind.Controller && source.handedness == handedness)
             {
+                if(!isDetected)
+                {
+                    SetupController(source);
+                }
+
                 UpdateAxis(state);
                 UpdatePose(state);
             }
