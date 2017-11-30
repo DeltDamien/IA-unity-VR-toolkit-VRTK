@@ -298,7 +298,8 @@
         /// <returns>A GameObject containing the object that has a render model for the controller.</returns>
         public override GameObject GetControllerRenderModel(VRTK_ControllerReference controllerReference)
         {
-            //TODO: Implement
+            //string controllerName = handedness
+            //controllerReference.actual.transform.Find("");
             return null;
         }
 
@@ -333,8 +334,8 @@
         /// <returns>An SDK_ControllerHapticModifiers object with a given `durationModifier` and an `intervalModifier`.</returns>
         public override SDK_ControllerHapticModifiers GetHapticModifiers()
         {
-            // TODO: Implement
             SDK_ControllerHapticModifiers modifiers = new SDK_ControllerHapticModifiers();
+            modifiers.durationModifier = 0.4f;
             return modifiers;
         }
 
@@ -357,6 +358,12 @@
         public override void HapticPulse(VRTK_ControllerReference controllerReference, float strength = 0.5F)
         {
             // TODO: Implement
+            uint index = VRTK_ControllerReference.GetRealIndex(controllerReference);
+            WindowsMR_TrackedObject device = GetControllerByIndex(index).transform.parent.GetComponent<WindowsMR_TrackedObject>();
+            if (device != null)
+            {
+                device.StartHaptics(1f, 1f);
+            }
         }
 
         /// <summary>

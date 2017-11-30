@@ -524,7 +524,7 @@
         }
         #endregion
 
-        public void StartHaptics(float intensity = 0.5f, float duration = 0.25f)
+        public void StartHaptics(float intensity = 0.5f, float duration = 0.4f)
         {
             InteractionSourceState[] states = InteractionManager.GetCurrentReading();
 
@@ -532,10 +532,15 @@
             {
                 if (state.source.kind == InteractionSourceKind.Controller && state.source.handedness == handedness)
                 {
-                    Debug.Log("Start Vibrating " + handedness);
+                    Debug.Log("Start Vibrating " + handedness + " " + intensity + " " + duration);
                     state.source.StartHaptics(intensity, duration);
                 }
             }
+        }
+
+        public void TestHapitcs()
+        {
+            StartHaptics();
         }
 
         public void OnDestroy()
