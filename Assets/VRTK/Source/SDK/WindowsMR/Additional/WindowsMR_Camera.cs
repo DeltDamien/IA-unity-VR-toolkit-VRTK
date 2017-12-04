@@ -9,6 +9,16 @@
     [RequireComponent (typeof(Camera))]
     public class WindowsMR_Camera : MonoBehaviour
     {
+        [SerializeField]
+        [Tooltip ("Force the Tracking Space Type to be RoomScale (normal VR experiences). If false, Stationary will be forced (e.g. video experiences.")]
+        private bool forceRoomScaleTracking = true;
+
+        public bool ForceRoomScaleTracking
+        {
+            get { return forceRoomScaleTracking; }
+            set { forceRoomScaleTracking = value; }
+        }
+
         /// <summary>
         /// Name of the Windows Mixed Reality Device as listed in XRSettings.
         /// </summary>
@@ -20,6 +30,22 @@
             {
                 SetupMRCamera();
             }
+        }
+
+        private void Update()
+        {
+            if (XRDevice.GetTrackingSpaceType() != TrackingSpaceType.RoomScale && forceRoomScaleTracking)
+            {
+                Debug.Log("Force RoomScale");
+                XRDevice.SetTrackingSpaceType(TrackingSpaceType.RoomScale);
+            }
+
+            if (XRDevice.GetTrackingSpaceType() != TrackingSpaceType.Stationary && !forceRoomScaleTracking)
+            {
+                Debug.Log("Force Stationary");
+                XRDevice.SetTrackingSpaceType(TrackingSpaceType.Stationary);
+            }
+            
         }
 
         /// <summary>
