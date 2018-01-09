@@ -34,6 +34,7 @@
 
         private void Update()
         {
+            Debug.Log("Current TrackingSpace: " + XRDevice.GetTrackingSpaceType() + " force " + forceRoomScaleTracking);
             if (XRDevice.GetTrackingSpaceType() != TrackingSpaceType.RoomScale && forceRoomScaleTracking)
             {
                 XRDevice.SetTrackingSpaceType(TrackingSpaceType.RoomScale);
