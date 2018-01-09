@@ -6,8 +6,7 @@
     using UnityEngine.XR.WSA.Input;
     using HoloToolkit.Unity;
 #endif
-
-    [RequireComponent(typeof(WindowsMR_ControllerVisualizer))]
+    
     public class WindowsMR_TrackedObject : MonoBehaviour
     {
 #if VRTK_DEFINE_SDK_WINDOWSMR
