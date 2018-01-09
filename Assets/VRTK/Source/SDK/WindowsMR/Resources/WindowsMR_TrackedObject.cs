@@ -4,10 +4,10 @@
     using UnityEngine;
 #if VRTK_DEFINE_SDK_WINDOWSMR
     using UnityEngine.XR.WSA.Input;
-    using HoloToolkit.Unity; 
+    using HoloToolkit.Unity;
 #endif
 
-    [RequireComponent (typeof(WindowsMR_ControllerVisualizer))]
+    [RequireComponent(typeof(WindowsMR_ControllerVisualizer))]
     public class WindowsMR_TrackedObject : MonoBehaviour
     {
 #if VRTK_DEFINE_SDK_WINDOWSMR
@@ -72,8 +72,9 @@
         }
 
         [SerializeField]
-        [Tooltip ("Defines the controllers hand.")]
+        [Tooltip("Defines the controllers hand.")]
         private InteractionSourceHandedness handedness;
+        public InteractionSourceHandedness Handedness { get { return handedness; } }
 
         private uint index = uint.MaxValue;
         public uint Index { get { return index; } }
@@ -148,16 +149,6 @@
             currentButtonState = new ButtonState();
             prevButtonState = new ButtonState();
             isDetected = true;
-
-            if (!isVisualized)
-            {
-                WindowsMR_ControllerVisualizer visualizer = GetComponent<WindowsMR_ControllerVisualizer>();
-                if (visualizer != null && visualizer.enabled)
-                {
-                    visualizer.LoadControllerModel(source, this);
-                }
-                isVisualized = true;
-            }
             Debug.Log("New controller detected: " + source.handedness);
         }
 

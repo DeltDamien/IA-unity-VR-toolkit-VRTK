@@ -44,6 +44,8 @@ using Windows.Storage.Streams;
         [SerializeField]
         protected UnityEngine.Material GLTFMaterial;
 
+        private bool isVisualized;
+
         private WindowsMR_TrackedObject trackedObject;
 
         private WindowsMR_ControllerInfo controllerInfo;
@@ -55,6 +57,20 @@ using Windows.Storage.Streams;
         [DllImport("MotionControllerModel")]
         private static extern bool TryGetMotionControllerModel([In] uint controllerId, [Out] out uint outputSize, [Out] out IntPtr outputBuffer);
 #endif
+
+        private void Start()
+        {
+            trackedObject = GetComponent<WindowsMR_TrackedObject>();
+
+            if(trackedObject == null)
+            {
+                Debug.LogError("ControllerVisualizer " + gameObject.name + " does not have a TrackedObject Component.");
+            }
+
+            InteractionManager.InteractionSourceDetected += InteractionManager_InteractionSourceDetected;
+            InteractionManager.InteractionSourceUpdated += InteractionManager_InteractionSourceUpdated;
+        }
+
         private void Update()
         {
             if (trackedObject != null)
@@ -63,10 +79,40 @@ using Windows.Storage.Streams;
             }
         }
 
-        public void LoadControllerModel(InteractionSource source, WindowsMR_TrackedObject trackedObject)
+        private void InteractionManager_InteractionSourceDetected(InteractionSourceDetectedEventArgs args)
+        {
+            InteractionSourceState state = args.state;
+            InteractionSource source = state.source;
+
+            if (source.kind == InteractionSourceKind.Controller && source.handedness == trackedObject.Handedness)
+            {
+                if(!isVisualized)
+                {
+                    LoadControllerModel(source);
+                    isVisualized = true;
+                }
+            }
+        }
+
+        private void InteractionManager_InteractionSourceUpdated(InteractionSourceUpdatedEventArgs args)
+        {
+            InteractionSourceState state = args.state;
+            InteractionSource source = state.source;
+
+            if (source.kind == InteractionSourceKind.Controller && source.handedness == trackedObject.Handedness)
+            {
+                if (!isVisualized)
+                {
+                    LoadControllerModel(source);
+                    isVisualized = true;
+                }
+            }
+        }
+
+        public void LoadControllerModel(InteractionSource source)
         {
             StartCoroutine(Co_LoadControllerModel(source));
-            this.trackedObject = trackedObject;
+            //this.trackedObject = trackedObject;
         }
 
         private IEnumerator Co_LoadControllerModel(InteractionSource source)
